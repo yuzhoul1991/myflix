@@ -30,3 +30,9 @@ Fabricate(:user, email: 'yuzhoul.eecs@gmail.com', password: 'password')
 100.times do
   Fabricate(:review, user: User.all.sample, video: Video.all.sample)
 end
+
+User.all.each do |user|
+  (1..2).to_a.each do |position|
+    Fabricate(:queue_item, position: position, user: user, video: Video.all.sample)
+  end
+end

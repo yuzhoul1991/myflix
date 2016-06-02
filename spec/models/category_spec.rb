@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Category do
   it { should have_many(:videos)}
+  it { should validate_presence_of(:name)}
 
   describe "#recent_videos" do
     let(:comidies) { Fabricate(:category) }
@@ -28,7 +29,7 @@ describe Category do
       expect(comidies.recent_videos).not_to include(old_video)
     end
     it "returns an empty array if the category does not have any videos" do
-      Video.destroy_all 
+      Video.destroy_all
       expect(comidies.recent_videos).to eq([])
     end
   end

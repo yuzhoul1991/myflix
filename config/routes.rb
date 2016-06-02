@@ -1,15 +1,16 @@
 Myflix::Application.routes.draw do
   root to: 'pages#front'
+
   get 'ui(/:action)', controller: 'ui'
+  get 'sign_in', to: 'sessions#new'
+  get 'sign_out', to: 'sessions#destroy'
+  get 'home', to: 'videos#index'
+  get 'my_queue', to: 'queue_items#index'
 
   get 'register', to: 'users#new'
   resources :users, only: [:create]
-
-  get 'sign_in', to: 'sessions#new'
-  get 'sign_out', to: 'sessions#destroy'
-
-  get 'home', to: 'videos#index'
-  get 'category/:id', to: 'categories#show'
+  resources :categories, only: [:show]
+  resources :queue_items, only: [:create, :destroy]
 
   resources :videos, only: [:show] do
     collection do
