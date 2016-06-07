@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe VideosController do
   describe 'GET show' do
+    let(:video) { Fabricate(:video) }
     context "with authenticated users" do
-      let(:video) { Fabricate(:video) }
       let(:review1) { Fabricate(:review, video: video) }
       let(:review2) { Fabricate(:review, video: video) }
       before do
@@ -18,17 +18,15 @@ describe VideosController do
       end
     end
     context "without unthenticated users" do
-      let(:video) { Fabricate(:video) }
-      it 'redirect user to sign in page' do
-        get :show, id: video.id
-        expect(response).to redirect_to sign_in_path
+      it_behaves_like "requires sign in" do
+        let(:action) { get :show, id: video.id }
       end
     end
   end
 
   describe "POST search" do
+    let(:video) { Fabricate(:video) }
     context "with authenticated users" do
-      let(:video) { Fabricate(:video) }
       before do
         session[:user_id] = Fabricate(:user).id
       end
@@ -39,10 +37,8 @@ describe VideosController do
     end
 
     context "without unthenticated users" do
-      let(:video) { Fabricate(:video) }
-      it 'redirect user to sign in page' do
-        post :search, search_term: video.title
-        expect(response).to redirect_to sign_in_path
+      it_behaves_like "requires sign in" do
+        let(:action) { post :search, search_term: video.title }
       end
     end
   end
