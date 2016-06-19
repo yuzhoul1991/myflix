@@ -34,6 +34,8 @@
             %li.row
               .col-sm-2
                 %span Rating: #{review.rating} / 5
-                %p by <a href="">#{review.user.fullname}</a>
+                %p
+                  by
+                  = link_to review.user.fullname, user_path(review.user)
               .col-sm-8
                 %p= review.body

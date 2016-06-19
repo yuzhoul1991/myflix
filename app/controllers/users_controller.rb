@@ -1,11 +1,12 @@
 class UsersController < ApplicationController
+  before_filter :require_sign_in, only: [:show]
   def new
     @user = User.new
   end
 
   def create
     @user = User.new(user_params)
-    
+
     if @user.save
       flash[:notice] = "You have successfully registered"
       redirect_to sign_in_path
@@ -14,9 +15,13 @@ class UsersController < ApplicationController
     end
   end
 
+  def show
+    @user = User.find(params[:id])
+  end
+
   private
 
   def user_params
-    params.require(:user).permit!
+    params.require(:user).permit(:email, :fullname, :password)
   end
 end
