@@ -35,4 +35,14 @@ describe User do
       expect(follower.following?(follower)).to be_truthy
     end
   end
+
+  describe '#generate_token' do
+    let(:user) { Fabricate(:user) }
+    before do
+      user.generate_token
+    end
+    it 'generates a token and save to the database' do
+      expect(User.first.token).not_to be_nil
+    end
+  end
 end

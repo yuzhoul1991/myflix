@@ -23,4 +23,8 @@ class User < ActiveRecord::Base
     return true if self == other
     following_relationships.map(&:leader).include? other
   end
+
+  def generate_token
+      self.update_attribute :token, SecureRandom.urlsafe_base64
+  end
 end
