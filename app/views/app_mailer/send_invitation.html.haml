@@ -1,0 +1,6 @@
+!!! 5
+%html(lang="en-US")
+  %body
+    %p= "You are invited to join Myflix by #{@invitation.inviter.fullname}"
+    %p= "#{@invitation.message}"
+    %p= link_to "Join MyFlix Now", new_with_invitation_url(@invitation.token)

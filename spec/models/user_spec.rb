@@ -36,13 +36,20 @@ describe User do
     end
   end
 
-  describe '#generate_token' do
+  describe '#follow' do
     let(:user) { Fabricate(:user) }
-    before do
-      user.generate_token
+    let(:another_user) { Fabricate(:user) }
+    it 'makes user follow the other user' do
+      user.follow another_user
+      expect(user.following?(another_user)).to be_truthy
     end
-    it 'generates a token and save to the database' do
-      expect(User.first.token).not_to be_nil
+    it 'does not allow user to follow itself' do
+      user.follow user
+      expect(user.following_relationships).to be_empty
     end
+  end
+
+  it_behaves_like 'generates token' do
+    let(:object) { Fabricate(:user) }
   end
 end

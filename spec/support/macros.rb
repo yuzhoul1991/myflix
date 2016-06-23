@@ -10,6 +10,10 @@ def sign_in(user=nil)
   click_button 'Sign in'
 end
 
+def sign_out
+  visit sign_out_path
+end
+
 def add_video_to_queue(video)
   visit home_path
   click_on_home_page_video video

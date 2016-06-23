@@ -26,14 +26,28 @@ describe UsersController do
 
   describe "POST create" do
     context "with valid input" do
+      let(:inviter) { Fabricate(:user) }
+      let(:invitation) { Fabricate(:invitation, inviter: inviter) }
       before do
-        post :create, user: Fabricate.attributes_for(:user)
+        invitation.generate_token
+        post :create, user: Fabricate.attributes_for(:user, email: 'recipient@email.com'), invitation_token: invitation.token
       end
       it "creates the user" do
-        expect(User.count).to eq(1)
+        expect(User.count).to eq(2)
       end
       it 'redirect to sign in path' do
         expect(response).to redirect_to sign_in_path
+      end
+      it "makes the user follow the inviter" do
+        invitee = User.where(email: 'recipient@email.com').first
+        expect(invitee.following?(inviter)).to be_truthy
+      end
+      it "makes the inviter follow the user" do
+        invitee = User.where(email: 'recipient@email.com').first
+        expect(inviter.following?(invitee)).to be_truthy
+      end
+      it "expires the invitation token" do
+        expect(invitation.reload.token).to be_nil
       end
     end
     context "with invalid input" do
@@ -67,6 +81,29 @@ describe UsersController do
         post :create, user: user.merge!(fullname: nil)
         expect(ActionMailer::Base.deliveries).to be_empty
       end
+    end
+  end
+
+  describe 'GET new_with_invitation' do
+    let(:invitation) { Fabricate(:invitation) }
+    before do
+      invitation.generate_token
+    end
+    it "prefill the @user.email field" do
+      get :new_with_invitation, token: invitation.token
+      expect(assigns(:user).email).to eq(invitation.recipient_email)
+    end
+    it "sets the @invitation_token variable" do
+      get :new_with_invitation, token: invitation.token
+      expect(assigns(:invitation_token)).to eq(invitation.token)
+    end
+    it "should render the new template" do
+      get :new_with_invitation, token: invitation.token
+      expect(response).to render_template :new
+    end
+    it "redirects to expired token path if the token is expeired" do
+      get :new_with_invitation, token: 'expired_token'
+      expect(response).to redirect_to expired_token_path
     end
   end
 end
