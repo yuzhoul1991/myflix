@@ -1,0 +1,19 @@
+machine:
+  ruby:
+    version: 2.1.2
+deployment:
+  production:
+    branch: master
+    commands:
+      - heroku maintenance:on --app myflix-yuzhoul
+      - heroku pg:backups capture --app myflix-yuzhoul
+      - git push git@heroku.com:myflix-yuzhoul.git $CIRCLE_SHA1:refs/heads/master
+      - heroku run rake db:migrate --app myflix-yuzhoul
+      - heroku maintenance:off --app myflix-yuzhoul
+  staging:
+    branch: staging
+    commands:
+      - heroku maintenance:on --app myflix-yuzhoul-staging
+      - git push git@heroku.com:myflix-yuzhoul-staging.git $CIRCLE_SHA1:refs/heads/master
+      - heroku run rake db:migrate --app myflix-yuzhoul-staging
+      - heroku maintenance:off --app myflix-yuzhoul-staging
