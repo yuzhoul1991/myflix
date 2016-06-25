@@ -10,7 +10,7 @@ class InvitationsController < ApplicationController
     @invitation.inviter_id = current_user.id
     if @invitation.save
       @invitation.generate_token
-      AppMailer.send_invitation(@invitation).deliver
+      AppMailer.delay.send_invitation(@invitation)
       flash[:notice] = "You have sent your invitation"
       redirect_to new_invitation_path
     else
