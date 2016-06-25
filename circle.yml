@@ -7,6 +7,7 @@ deployment:
     commands:
       - heroku maintenance:on --app myflix-yuzhoul
       - heroku pg:backups capture --app myflix-yuzhoul
+      - git fetch --all --unshallow
       - git push git@heroku.com:myflix-yuzhoul.git $CIRCLE_SHA1:refs/heads/master
       - heroku run rake db:migrate --app myflix-yuzhoul
       - heroku maintenance:off --app myflix-yuzhoul
