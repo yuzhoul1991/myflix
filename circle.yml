@@ -14,6 +14,7 @@ deployment:
     branch: staging
     commands:
       - heroku maintenance:on --app myflix-yuzhoul-staging
+      - git fetch --all --unshallow
       - git push git@heroku.com:myflix-yuzhoul-staging.git $CIRCLE_SHA1:refs/heads/master
       - heroku run rake db:migrate --app myflix-yuzhoul-staging
       - heroku maintenance:off --app myflix-yuzhoul-staging
