@@ -32,6 +32,9 @@ describe UsersController do
         invitation.generate_token
         post :create, user: Fabricate.attributes_for(:user, email: 'recipient@email.com'), invitation_token: invitation.token
       end
+      after do
+        ActionMailer::Base.deliveries.clear
+      end
       it "creates the user" do
         expect(User.count).to eq(2)
       end
