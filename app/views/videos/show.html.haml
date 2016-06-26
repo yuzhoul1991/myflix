@@ -2,14 +2,14 @@
   .container
     .row
       .video_large_cover.col-sm-7.col-sm-offset-1
-        %img(src="http://dummyimage.com/665x375/000000/00a2ff")
+        %img(src="#{@video.large_cover}")
       .video_info.col-sm-3
         %header
           %h3= @video.title
           %span Rating: #{Video.get_average_rating(@video.title)}/5.0
         %p= @video.description
         .actions
-          %a.btn.btn-primary(href="") Watch Now
+          %a.btn.btn-primary(href="#{@video.video_url}") Watch Now
           - unless current_user.video_in_queue?(@video)
             = link_to "+ My Queue", queue_items_path(video_id: @video.id), method: :post, class: 'btn btn-default'
 %section.reviews.container
