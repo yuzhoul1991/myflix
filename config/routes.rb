@@ -17,6 +17,10 @@ Myflix::Application.routes.draw do
   get 'register/:token', to: 'users#new_with_invitation', as: 'new_with_invitation'
   post 'update_queue', to: 'queue_items#update_queue'
 
+  namespace :admin do
+    resources :videos, only: [:new, :create]
+  end
+
   resources :relationships, only: [:destroy, :create]
   resources :users, only: [:create, :show]
   resources :categories, only: [:show]

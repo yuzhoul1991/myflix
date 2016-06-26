@@ -25,7 +25,7 @@ end
   Fabricate(:user)
 end
 
-Fabricate(:user, email: 'yuzhoul.eecs@gmail.com', password: 'password')
+Fabricate(:admin, email: 'yuzhoul.eecs@gmail.com', password: 'password', fullname: 'Yuzhou Liu')
 
 100.times do
   Fabricate(:review, user: User.all.sample, video: Video.all.sample)
