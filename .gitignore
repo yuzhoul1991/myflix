@@ -20,3 +20,6 @@ config/database.yml
 
 # Ignore ctag files
 tags
+
+# Ignore .DS_Store
+.DS_Store
