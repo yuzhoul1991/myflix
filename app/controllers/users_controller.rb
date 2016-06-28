@@ -20,9 +20,14 @@ class UsersController < ApplicationController
 
     if @user.save
       handle_invitation
+      charge_status = charge_credit_card(params)
       flash[:notice] = "You have successfully registered"
       AppMailer.delay.send_welcome_email(@user)
-      redirect_to sign_in_path
+      if charge_status
+        redirect_to sign_in_path
+      else
+        render :new
+      end
     else
       render :new
     end
@@ -33,6 +38,23 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def charge_credit_card(params)
+    Stripe.api_key = "#{ENV['STRIPE_SECRET_KEY']}"
+    token = params[:stripeToken]
+    begin
+      charge = Stripe::Charge.create(
+        :amount => 999,
+        :currency => "usd",
+        :source => token,
+      )
+      flash[:notice] = "Your card has been charged $9.99, Thank you"
+    rescue Stripe::CardError => e
+      flash[:error] = "There was something wrong with processing your credit card"
+      return false
+    end
+    true
+  end
 
   def user_params
     params.require(:user).permit(:email, :fullname, :password)
