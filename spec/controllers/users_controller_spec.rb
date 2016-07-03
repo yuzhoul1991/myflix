@@ -25,6 +25,9 @@ describe UsersController do
   end
 
   describe "POST create" do
+    before do
+      StripeWrapper::Charge.stub(:create)
+    end
     context "with valid input" do
       let(:inviter) { Fabricate(:user) }
       let(:invitation) { Fabricate(:invitation, inviter: inviter) }

@@ -17,11 +17,13 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
+      binding.pry
 
     if @user.save
       handle_invitation
       charge_status = charge_credit_card(params)
       flash[:notice] = "You have successfully registered"
+      binding.pry
       AppMailer.delay.send_welcome_email(@user)
       if charge_status
         redirect_to sign_in_path
@@ -40,10 +42,9 @@ class UsersController < ApplicationController
   private
 
   def charge_credit_card(params)
-    Stripe.api_key = "#{ENV['STRIPE_SECRET_KEY']}"
     token = params[:stripeToken]
     begin
-      charge = Stripe::Charge.create(
+      StripeWrapper::Charge.create(
         :amount => 999,
         :currency => "usd",
         :source => token,
