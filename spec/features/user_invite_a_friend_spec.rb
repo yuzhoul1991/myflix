@@ -47,6 +47,6 @@ feature 'User invites a friend' do
     select '2020', from: 'date_year'
     click_button "Sign Up"
     sleep 5
-    expec(page).to have_content 'Sign in'
+    expect(page).to have_content 'Sign in'
   end
 end
