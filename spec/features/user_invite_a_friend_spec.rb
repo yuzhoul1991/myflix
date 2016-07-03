@@ -46,5 +46,7 @@ feature 'User invites a friend' do
     select '12 - December', from: 'date_month'
     select '2020', from: 'date_year'
     click_button "Sign Up"
+    sleep 5
+    expec(page).to have_content 'Sign in'
   end
 end

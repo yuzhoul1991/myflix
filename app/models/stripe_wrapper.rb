@@ -1,7 +1,6 @@
 module StripeWrapper
   class Charge
     def self.create(options={})
-      binding.pry
       StripeWrapper.set_api_key
       Stripe::Charge.create(
         amount: options[:amount],
