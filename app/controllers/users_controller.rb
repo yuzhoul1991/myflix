@@ -17,18 +17,24 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-
-    if @user.save
-      handle_invitation
-      charge_status = charge_credit_card(params)
-      flash[:notice] = "You have successfully registered"
-      AppMailer.delay.send_welcome_email(@user)
-      if charge_status
+    if @user.valid?
+      token = params[:stripeToken]
+      charge = StripeWrapper::Charge.create(
+        :amount => 999,
+        :token => token,
+      )
+      if charge.successful?
+        @user.save
+        handle_invitation
+        flash[:notice] = "You have successfully registered"
+        AppMailer.delay.send_welcome_email(@user)
         redirect_to sign_in_path
       else
+        flash[:error] = charge.error_message
         render :new
       end
     else
+      flash[:error] = 'Invalid user information, please correct and try again.'
       render :new
     end
   end
@@ -38,22 +44,6 @@ class UsersController < ApplicationController
   end
 
   private
-
-  def charge_credit_card(params)
-    token = params[:stripeToken]
-    begin
-      StripeWrapper::Charge.create(
-        :amount => 999,
-        :currency => "usd",
-        :source => token,
-      )
-      flash[:notice] = "Your card has been charged $9.99, Thank you"
-    rescue Stripe::CardError => e
-      flash[:error] = "There was something wrong with processing your credit card"
-      return false
-    end
-    true
-  end
 
   def user_params
     params.require(:user).permit(:email, :fullname, :password)
