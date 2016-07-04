@@ -109,7 +109,6 @@ describe UsersController do
       end
       it 'does not send email with invalid inputs' do
         post :create, user: user.merge!(fullname: nil)
-        binding.pry
         expect(ActionMailer::Base.deliveries).to be_empty
       end
     end
