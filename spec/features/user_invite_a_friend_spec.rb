@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'User invites a friend' do
   let(:user) { Fabricate(:user) }
   let(:invitee) { Fabricate.attributes_for(:user) }
-  scenario 'user successfully invites friend and invitation is accepted' do
+  scenario 'user successfully invites friend and invitation is accepted', { js: true, vcr: true } do
     sign_in user
     send_invitation
     sign_out
@@ -41,6 +41,12 @@ feature 'User invites a friend' do
 
     fill_in "Password", with: invitee[:password]
     fill_in "Full Name", with: invitee[:fullname]
+    fill_in "Credit Card Number", with: '4242424242424242'
+    fill_in "Security Code", with: '123'
+    select '12 - December', from: 'date_month'
+    select '2020', from: 'date_year'
     click_button "Sign Up"
+    sleep 2
+    expect(page).to have_content 'Sign in'
   end
 end

@@ -17,6 +17,8 @@ gem 'sinatra', :require => false
 gem 'unicorn'
 gem 'carrierwave'
 gem 'mini_magick'
+gem 'stripe'
+gem 'figaro'
 
 group :development do
   gem 'thin'
@@ -41,6 +43,8 @@ group :test do
   gem 'capybara'
   gem 'capybara-email'
   gem 'launchy'
+  gem 'webmock'
+  gem 'selenium-webdriver'
 end
 
 group :production, :staging do

@@ -25,7 +25,15 @@ describe UsersController do
   end
 
   describe "POST create" do
-    context "with valid input" do
+    let(:charge) { double(:charge, successful?: true) }
+    before do
+      StripeWrapper::Charge.stub(:create).and_return(charge)
+    end
+    after do
+      ActionMailer::Base.deliveries.clear
+    end
+
+    context "with valid personal info and valid credit card info" do
       let(:inviter) { Fabricate(:user) }
       let(:invitation) { Fabricate(:invitation, inviter: inviter) }
       before do
@@ -53,7 +61,25 @@ describe UsersController do
         expect(invitation.reload.token).to be_nil
       end
     end
-    context "with invalid input" do
+
+    context 'with valid personal info and declined credit card' do
+      before do
+        charge = double(:charge, successful?: false, error_message: 'card declined')
+        StripeWrapper::Charge.stub(:create).and_return(charge)
+        post :create, user: Fabricate.attributes_for(:user), stripeToken: '123445'
+      end
+      it 'does not create user record' do
+        expect(User.count).to eq(0)
+      end
+      it 'renders the new template' do
+        expect(response).to render_template :new
+      end
+      it 'set the flash error message' do
+        expect(flash[:error]).to be_present
+      end
+    end
+
+    context "with invalid personal info" do
       before do
         post :create, user: { password: 'password', fullname: Faker::Name.name }
       end
@@ -66,12 +92,13 @@ describe UsersController do
       it 'sets @user' do
         expect(assigns(:user)).to be_instance_of(User)
       end
+      it 'does not charge the credit card' do
+        StripeWrapper::Charge.should_not_receive(:create)
+      end
     end
+
     context 'sending emails' do
       let(:user) { Fabricate.attributes_for(:user) }
-      after do
-        ActionMailer::Base.deliveries.clear
-      end
       it 'sends out email to user with valid inputs' do
         post :create, user: user
         expect(ActionMailer::Base.deliveries.last.to).to eq([user[:email]])
@@ -82,6 +109,7 @@ describe UsersController do
       end
       it 'does not send email with invalid inputs' do
         post :create, user: user.merge!(fullname: nil)
+        binding.pry
         expect(ActionMailer::Base.deliveries).to be_empty
       end
     end
