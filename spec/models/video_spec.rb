@@ -26,19 +26,4 @@ describe Video do
       expect(Video.search_by_title("")).to eq([])
     end
   end
-  describe "get_average_rating" do
-    let (:video) { Fabricate(:video) }
-    it 'returns the average rating' do
-      total = 0.0
-      10.times do
-        review = Fabricate(:review)
-        total += review.rating
-        video.reviews << review
-      end
-      expect(Video.get_average_rating(video.title)).to eq(total/10.round(1))
-    end
-    it 'returns 0.0 if no review for the video' do
-      expect(Video.get_average_rating(video.title)).to eq(0.0)
-    end
-  end
 end
