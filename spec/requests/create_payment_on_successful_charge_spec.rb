@@ -92,10 +92,10 @@ describe 'Create payment on successful charge' do
   it 'creates the payment associated witht the user', :vcr do
     expect(Payment.first.user).to eq(user)
   end
-  it 'creates the payment with the amount' do
+  it 'creates the payment with the amount', :vcr do
     expect(Payment.first.amount).to eq(999)
   end
-  it 'creates the payment with reference id' do
+  it 'creates the payment with reference id', :vcr do
     expect(Payment.first.reference_id).to eq('ch_18VEY6JLgmzjspxRzAIK3JNR')
   end
 end

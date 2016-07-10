@@ -14,8 +14,8 @@ end
   ["family_guy", "futurama", "monk", "south_park"].each do |name|
     Fabricate(:video,
               title: name,
-              small_cover_url: File.join("/tmp", name + ".jpg"),
-              large_cover_url: "http://dummyimage.com/665x375/000000/00a2ff",
+              small_cover: File.join("/tmp", name + ".jpg"),
+              large_cover: "http://dummyimage.com/665x375/000000/00a2ff",
               category: Category.all.sample
               )
   end

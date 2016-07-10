@@ -4,6 +4,8 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'capybara/email/rspec'
 require 'sidekiq/testing'
+require 'vcr'
+require 'webmock/rspec'
 
 Sidekiq::Testing.inline!
 Capybara.server_port = 52622

@@ -5,13 +5,6 @@ class ApplicationController < ActionController::Base
     access_denied unless logged_in?
   end
 
-  def require_admin
-    unless current_user.admin?
-      flash[:error] = 'You do no have admin access'
-      redirect_to home_path
-    end
-  end
-
   def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id]
   end

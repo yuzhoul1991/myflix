@@ -1,6 +1,5 @@
-class Admin::VideosController < ApplicationController
+class Admin::VideosController < AdminsController
   before_filter :require_sign_in
-  before_filter :require_admin
 
   def new
     @video = Video.new
