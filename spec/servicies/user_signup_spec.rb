@@ -3,11 +3,11 @@ require 'spec_helper'
 describe UserSignup do
   describe '#sign_up' do
     context "with valid personal info and valid credit card info" do
-      let(:charge) { double(:charge, successful?: true) }
+      let(:response) { double(:response, successful?: true, customer_token: 'customer_token') }
       let(:inviter) { Fabricate(:user) }
       let(:invitation) { Fabricate(:invitation, inviter: inviter, recipient_email: 'recipient@example.com') }
       before do
-        StripeWrapper::Charge.stub(:create).and_return(charge)
+        StripeWrapper::Customer.stub(:create).and_return(response)
         invitation.generate_token
         UserSignup.new(Fabricate.build(:user, email: 'recipient@email.com')).sign_up('stripe token', invitation.token)
       end
@@ -36,12 +36,16 @@ describe UserSignup do
         invitee = User.where(email: 'recipient@email.com').first
         expect(ActionMailer::Base.deliveries.last.body).to include(invitee.fullname)
       end
+      it 'stores the customer token from stripe' do
+        invitee = User.where(email: 'recipient@email.com').first
+        expect(invitee.customer_token).to eq('customer_token')
+      end
     end
 
     context 'with valid personal info and declined credit card' do
       before do
-        charge = double(:charge, successful?: false, error_message: 'card declined')
-        StripeWrapper::Charge.stub(:create).and_return(charge)
+        response = double(:response, successful?: false, error_message: 'card declined')
+        StripeWrapper::Customer.stub(:create).and_return(response)
         UserSignup.new(Fabricate.build(:user)).sign_up('stripe token', nil)
       end
       it 'does not create user record' do

@@ -3,6 +3,7 @@ require 'sidekiq/web'
 Myflix::Application.routes.draw do
   root to: 'pages#front'
   mount Sidekiq::Web => '/sidekiq'
+  mount StripeEvent::Engine => '/stripe_events'
 
   get 'ui(/:action)', controller: 'ui'
   get 'sign_in', to: 'sessions#new'

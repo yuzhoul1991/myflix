@@ -20,6 +20,7 @@ gem 'mini_magick'
 gem 'stripe'
 gem 'figaro'
 gem 'draper'
+gem 'stripe_event'
 
 group :development do
   gem 'thin'
