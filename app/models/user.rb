@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
   include Tokenable
-  
+
   has_many :reviews, -> { order "created_at desc" }
   has_many :queue_items, -> { order "position" }
   has_many :following_relationships, class_name: 'Relationship', foreign_key: 'follower_id'
@@ -15,6 +15,10 @@ class User < ActiveRecord::Base
     queue_items.each_with_index do |queue_item, index|
       queue_item.update_attributes(position: index + 1)
     end
+  end
+
+  def deactivate!
+    self.update_column(:active, false)
   end
 
   def video_in_queue?(video)

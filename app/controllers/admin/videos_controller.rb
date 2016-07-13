@@ -1,6 +1,4 @@
 class Admin::VideosController < AdminsController
-  before_filter :require_sign_in
-
   def new
     @video = Video.new
   end

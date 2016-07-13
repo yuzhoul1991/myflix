@@ -49,6 +49,14 @@ describe User do
     end
   end
 
+  describe '#deactivate!' do
+    let(:user) { Fabricate(:user) }
+    it 'deactivate an active user' do
+      user.deactivate!
+      expect(user.reload).not_to be_active
+    end
+  end
+
   it_behaves_like 'generates token' do
     let(:object) { Fabricate(:user) }
   end

@@ -1,4 +1,5 @@
 class AdminsController < ApplicationController
+  before_filter :require_sign_in
   before_filter :require_admin
 
   private
