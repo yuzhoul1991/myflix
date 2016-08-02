@@ -20,6 +20,9 @@ feature 'User registers', { js: true, vcr: true } do
   let(:declined_card) {
     good_card.merge(card_number: '4000000000000002')
   }
+  after do
+    clear_email
+  end
   scenario "with valid user info and valid card" do
     fill_in_user_info valid_user
     fill_in_credit_card good_card
