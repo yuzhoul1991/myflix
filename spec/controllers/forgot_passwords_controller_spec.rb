@@ -18,6 +18,9 @@ describe ForgotPasswordsController do
       before do
         post :create, email: user.email
       end
+      after do
+        ActionMailer::Base.deliveries.clear
+      end
       it 'redirect to forgot password confirmation page' do
         expect(response).to redirect_to forgot_password_confirmation_path
       end
