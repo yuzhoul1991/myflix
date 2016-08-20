@@ -12,10 +12,10 @@ end
 
 5.times do
   ["family_guy", "futurama", "monk", "south_park"].each do |name|
-    Fabricate(:video,
+  Fabricate(:video,
               title: name,
-              small_cover: File.join("/tmp", name + ".jpg"),
-              large_cover: "http://dummyimage.com/665x375/000000/00a2ff",
+              small_cover: File.open(File.join(Rails.root, "public/tmp", name + ".jpg")),
+              large_cover: File.open(File.join(Rails.root, "public/tmp/placeholder.png")),
               category: Category.all.sample
               )
   end
